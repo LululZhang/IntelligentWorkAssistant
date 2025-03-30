@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智工管家登录</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+
+            background-image: url('/_TJU1349.JPG');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+    
+    /* 添加备用背景色 */
+            background-color: #f4f4f4; /* 图片加载失败时显示 */
+    
+    /* 移动端优化 */
+            @media (max-width: 768px) {
+            background-attachment: scroll; /* 移动端取消固定背景 */
+            }
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* 确保全屏高度 */
+            
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 46%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .login-form li {
+            list-style: none;
+            margin-bottom: 10px;
+        }
+        .login{
+            display: flex;
+            flex-direction: column;
+            width: 70%;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <form action="#">
+        <!-- 登录跳转需要后台API -->
+    <ul>
+        <br>
+
+        <div class="login-form">
+            <li>账号：<input type="text" name="username"placeholder="请输入账号"></li>
+            <li>密码：<input type="password" name="password"placeholder="请输入密码"></li>
+        </div>
+        
+        <input type="radio" name="remember" value="yes">记住我
+        <input type="radio" name="remember" value="no">不记住我
+        <br>
+        <br>
+
+        <div class="login">
+            <input type="submit" value="登录">
+        </div>
+        
+        <br>
+        <a href="http://127.0.0.1:5500/demo.html"><i>忘记密码</i></a>
+        <!-- 需要一个界面来重置密码 -->
+    </form>
+    </div>
+</body>
+</html>
