@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>请选择项目</title>
+</head>
+<body>
+    <h1>商业建筑项目</h1>
+        <p>城市综合体</p>
+            <a href="default11.htm">国际金融中心</a>
+            <br />
+            <a href="default12.htm">环球贸易广场UTC</a>
+            <br />
+        <p>写字楼</p>
+            <a href="default13.htm">云端大厦</a>
+            <br />
+            <a href="default14.htm">绿洲商务中心</a>
+            <br />
+        <p>购物中心</p>
+            <a href="default15.htm">万象城</a>
+            <br />
+            <a href="default16.htm">星光天地购物广场</a>
+            <br />
+    <h2>住宅建筑项目</h2>
+        <p>高端住宅</p>
+            <a href="default21.htm">滨江壹号院</a>
+            <br />
+            <a href="default22.htm">翡翠湖畔别墅区</a>
+            <br />
+        <p>公寓楼</p>
+            <a href="default23.htm">青年创客公寓</a>
+            <br />
+            <a href="default24.htm">梧桐国际社区</a>
+            <br />
+        <p>保障性住房</p>
+            <a href="default25.htm">阳光家园安居工程</a>
+            <br />
+    <h3>公共设施项目</h3>
+    <p>文化教育</p>
+        <a href="default11.htm">市立图书馆新馆</a>
+        <br />
+        <a href="default12.htm">科技馆穹顶计划</a>
+        <br />
+    <p>交通枢纽</p>
+        <a href="default13.htm">虹桥交通枢纽扩建工程</a>
+        <br />
+        <a href="default14.htm">滨海国际机场T3航站楼</a>
+        <br />
+    <p>医疗设施</p>
+        <a href="default15.htm">仁和医院新院区</a>
+        <br />
+
+</body>
+</html>
