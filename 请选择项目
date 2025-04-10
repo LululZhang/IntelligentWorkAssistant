@@ -1,55 +1,92 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!-- HTML5的文档声明 -->
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8" /><!--字符编码-->
     <title>请选择项目</title>
 </head>
 <body>
-    <h1>商业建筑项目</h1>
+    <h1>请选择项目</h1>
+    <a href="#商业">商业</a>
+    <a href="#住宅">住宅</a>
+    <a href="#公共设施">公共设施</a>
+    <h2 id="商业">商业建筑项目</h2>
         <p>城市综合体</p>
-            <a href="default11.htm">国际金融中心</a>
-            <br />
-            <a href="default12.htm">环球贸易广场UTC</a>
-            <br />
+            <a href="default11.htm" target="_blank">国际金融中心</a>
+            </br>
+            <img src="" alt="国际金融中心">
+            </br>
+            <a href="default12.htm" target="_blank">环球贸易广场UTC</a>
+            </br>
+            <img src="" alt="环球贸易广场UTC">
         <p>写字楼</p>
-            <a href="default13.htm">云端大厦</a>
-            <br />
-            <a href="default14.htm">绿洲商务中心</a>
-            <br />
+            <a href="default13.htm" target="_blank">云端大厦</a>
+            </br>
+            <img src="" alt="云端大厦">
+            </br>
+            <a href="default14.htm" target="_blank">绿洲商务中心</a>
+            </br>
+            <img src="" alt="绿洲商务中心">
+            </br>
         <p>购物中心</p>
-            <a href="default15.htm">万象城</a>
-            <br />
-            <a href="default16.htm">星光天地购物广场</a>
-            <br />
-    <h2>住宅建筑项目</h2>
+            <a href="default15.htm" target="_blank">万象城</a>
+            </br>
+            <img src="" alt="万象城">
+            </br>
+            <a href="default16.htm" target="_blank">星光天地购物广场</a>
+            </br>
+            <img src="" alt="星光天地购物广场">
+            </br>
+    <h2 id="住宅">住宅建筑项目</h2>
         <p>高端住宅</p>
-            <a href="default21.htm">滨江壹号院</a>
-            <br />
-            <a href="default22.htm">翡翠湖畔别墅区</a>
-            <br />
+            <a href="default21.htm" target="_blank">滨江壹号院</a>
+            </br>
+            <img src="" alt="滨江壹号院">
+            </br>
+            <a href="default22.htm" target="_blank">翡翠湖畔别墅区</a>
+            </br>
+            <img src="" alt="翡翠湖畔别墅区">
+            </br>
         <p>公寓楼</p>
-            <a href="default23.htm">青年创客公寓</a>
-            <br />
-            <a href="default24.htm">梧桐国际社区</a>
-            <br />
+            <a href="default23.htm" target="_blank">青年创客公寓</a>
+            </br>
+            <img src="" alt="青年创客公寓">
+            </br>
+            <a href="default24.htm" target="_blank">梧桐国际社区</a>
+            </br>
+            <img src="" alt="梧桐国际社区">
+            </br>
         <p>保障性住房</p>
-            <a href="default25.htm">阳光家园安居工程</a>
-            <br />
-    <h3>公共设施项目</h3>
+            <a href="default25.htm" target="_blank">阳光家园安居工程</a>
+            </br>
+            <img src="" alt="阳光家园安居工程">
+            </br>
+    <h2 id="公共设施">公共设施项目</h2>
     <p>文化教育</p>
-        <a href="default11.htm">市立图书馆新馆</a>
-        <br />
-        <a href="default12.htm">科技馆穹顶计划</a>
-        <br />
+        <a href="default11.htm" target="_blank">市立图书馆新馆</a>
+        </br>
+        <img src="" alt="市立图书馆新馆">
+        </br>
+        <a href="default12.htm" target="_blank">科技馆穹顶计划</a>
+        </br>
+        <img src="" alt="科技馆穹顶计划">
+        </br>
     <p>交通枢纽</p>
-        <a href="default13.htm">虹桥交通枢纽扩建工程</a>
-        <br />
-        <a href="default14.htm">滨海国际机场T3航站楼</a>
-        <br />
+        <a href="default13.htm" target="_blank">虹桥交通枢纽扩建工程</a>
+        </br>
+        <img src="" alt="虹桥交通枢纽扩建工程">
+        </br>
+        <a href="default14.htm" target="_blank">滨海国际机场T3航站楼</a>
+        </br>
+        <img src="" alt="滨海国际机场T3航站楼">
+        </br>
     <p>医疗设施</p>
-        <a href="default15.htm">仁和医院新院区</a>
-        <br />
+        <a href="default15.htm" target="_blank">仁和医院新院区</a>
+        </br>
+        <img src="" alt="仁和医院新院区">
+        </br>
+    <a href="#">回到顶部</a><!--返回顶部-->
+    <a href="">刷新页面</a><!--刷新页面-->
 
 </body>
 </html>
