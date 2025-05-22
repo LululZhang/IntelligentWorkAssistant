@@ -227,6 +227,16 @@ def batch_update_tasks():
         db.session.rollback()
         return jsonify({'success': False, 'error': str(e)}), 400
 
+@app.route('/pending_approvals')
+@login_required
+def pending_approvals():
+    return render_template('pending_approvals.html')
+
+@app.route('/project_files')
+@login_required
+def project_files():
+    return render_template('text.html')    
+
 @app.route('/logout')
 @login_required
 def logout():
