@@ -3,6 +3,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 import os
 from datetime import datetime, timedelta
 from models import db, User, Task
+import pandas as pd
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'  # 用于会话安全
@@ -13,6 +14,37 @@ db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+def import_staff_permissions():
+    """从Excel文件导入员工权限"""
+    try:
+        # 读取Excel文件
+        df = pd.read_excel('Staff_list.xlsx')
+        
+        # 遍历每一行数据
+        for _, row in df.iterrows():
+            username = str(row['账号'])  # 假设Excel中有"账号"列
+            password = str(row['密码'])  # 假设Excel中有"密码"列
+            
+            # 查找或创建用户
+            user = User.query.filter_by(username=username).first()
+            if not user:
+                user = User(username=username, email=f"{username}@example.com")
+                user.set_password(password)
+            
+            # 添加国际金融中心项目权限
+            if not user.project_permissions:
+                user.project_permissions = '国际金融中心'
+            elif '国际金融中心' not in user.project_permissions:
+                user.project_permissions += ',国际金融中心'
+            
+            db.session.add(user)
+        
+        db.session.commit()
+        print("成功导入员工权限")
+    except Exception as e:
+        print(f"导入员工权限时出错: {str(e)}")
+        db.session.rollback()
 
 # 错误处理中间件
 @app.errorhandler(404)
@@ -52,11 +84,34 @@ def login():
 @app.route('/project_selection')
 @login_required
 def project_selection():
-    return render_template('project_selection.html')
+    # 定义所有项目及其权限要求
+    projects = {
+        '国际金融中心': '国际金融中心',
+        '环球贸易广场UTC': 'UTC',
+        '云端大厦': '云端大厦',
+        '绿洲商务中心': '绿洲商务中心',
+        '万象城': '万象城',
+        '星光天地购物广场': '星光天地',
+        '滨江壹号院': '滨江壹号院',
+        '翡翠湖畔别墅区': '翡翠湖畔',
+        '市立图书馆新馆': '图书馆',
+        '科技馆穹顶计划': '科技馆'
+    }
+    
+    # 检查用户对每个项目的权限
+    project_permissions = {}
+    for project, permission in projects.items():
+        project_permissions[project] = current_user.has_project_permission(permission)
+    
+    return render_template('project_selection.html', project_permissions=project_permissions)
 
 @app.route('/project_overview')
 @login_required
 def project_overview():
+    # 检查用户是否有权限访问国际金融中心项目
+    if not current_user.has_project_permission('国际金融中心'):
+        flash('您没有权限访问该项目')
+        return redirect(url_for('project_selection'))
     return render_template('project_overview.html')
 
 @app.route('/project_work')
@@ -180,15 +235,18 @@ def logout():
 
 if __name__ == '__main__':
     with app.app_context():
-        # 删除所有表并重新创建
-        db.drop_all()
-        db.create_all()
+
         
         # 创建默认管理员账户
         if not User.query.filter_by(username='admin').first():
             admin = User(username='admin', email='admin@example.com')
             admin.set_password('admin123')
+            admin.project_permissions = '国际金融中心'  # 给管理员添加国际金融中心项目权限
             db.session.add(admin)
             db.session.commit()
             print("已创建默认管理员账户")
+        
+        # 导入员工权限
+        import_staff_permissions()
+        
     app.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False) 

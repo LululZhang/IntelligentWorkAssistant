@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>项目进度 - 智工管家</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #4285f4;
+            --accent-color: #e8f0fe;
+            --hover-color: #1557b0;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+            height: calc(100vh - 72px);
+        }
+
+        .gantt-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 1rem;
+            height: 100%;
+            display: flex;
+        }
+
+        #gantt_here {
+            width: 70%;
+            height: 100%;
+            border-right: 1px solid #eee;
+        }
+
+        .progress-panel {
+            width: 30%;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .progress-card {
+            background: var(--accent-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .progress-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .progress-form label {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-form input,
+        .progress-form select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .btn-update {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-update:hover {
+            background: var(--hover-color);
+        }
+
+        /* 甘特图自定义样式 */
+        .gantt_task_progress {
+            background-color: var(--primary-color);
+        }
+
+        .gantt_task_line {
+            background-color: var(--accent-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .gantt_task_line.gantt_dependent_task {
+            background-color: #fff3e0;
+        }
+
+        .progress-form {
+            position: relative;
+        }
+
+        .progress-form .form-control {
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .progress-form .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+        }
+
+        .progress-form label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .progress {
+            background-color: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">智工管家</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('project_work') }}">
+                            <i class="bi bi-arrow-left"></i> 返回工作台
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> 退出登录
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <div class="gantt-container">
+            <div id="gantt_here"></div>
+            <div class="progress-panel">
+                <div class="progress-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="progress-title mb-0">进度调整</h3>
+                        <button class="btn btn-sm btn-primary" onclick="showNewTaskForm()">
+                            <i class="bi bi-plus-lg"></i> 新建任务
+                        </button>
+                    </div>
+                    <div id="newTaskForm" style="display: none;" class="mb-4">
+                        <h4 class="h5 mb-3">新建任务</h4>
+                        <div class="progress-form">
+                            <div class="mb-3">
+                                <label for="newTaskName">任务名称</label>
+                                <input type="text" id="newTaskName" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="newStartDate">开始时间</label>
+                                <input type="date" id="newStartDate" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="newDuration">工期（天）</label>
+                                <input type="number" id="newDuration" class="form-control" min="1" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="newResource">资源名称</label>
+                                <input type="text" id="newResource" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="newParentTask">父任务</label>
+                                <select id="newParentTask" class="form-control">
+                                    <option value="0">无</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="newDependencies">前置任务</label>
+                                <select id="newDependencies" class="form-control" multiple>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary" onclick="createNewTask()">创建任务</button>
+                                <button class="btn btn-secondary" onclick="hideNewTaskForm()">取消</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="taskEditForm">
+                        <div class="mb-3">
+                            <label for="taskSelect">选择任务</label>
+                            <select id="taskSelect" class="form-control"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="progressInput">完成进度 (%)</label>
+                            <input type="number" id="progressInput" class="form-control" min="0" max="100">
+                        </div>
+                        <div class="mb-3">
+                            <label for="startDate">开始时间</label>
+                            <input type="date" id="startDate" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="duration">工期（天）</label>
+                            <input type="number" id="duration" class="form-control" min="1">
+                        </div>
+                        <div class="mb-3">
+                            <label for="resource">资源名称</label>
+                            <input type="text" id="resource" class="form-control">
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-update flex-grow-1" onclick="updateTask()">更新进度</button>
+                            <button class="btn btn-danger" onclick="deleteTask()">
+                                <i class="bi bi-trash"></i> 删除任务
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.dhtmlx.com/gantt/edge/dhtmlxgantt.js"></script>
+    <script>
+        gantt.config.date_format = "%Y-%m-%d %H:%i";
+        gantt.config.columns = [
+            {name: "text", label: "任务名称", tree: true, width: 200},
+            {name: "start_date", label: "开始时间", align: "center", width: 100},
+            {name: "duration", label: "工期(天)", align: "center", width: 80},
+            {name: "resource", label: "资源", align: "center", width: 100},
+            {name: "progress", label: "进度", align: "center", width: 80, template: function(obj) {
+                return Math.round(obj.progress * 100) + "%";
+            }}
+        ];
+
+        // 配置时间刻度
+        gantt.config.scale_unit = "day";
+        gantt.config.date_scale = "%d日"; // 修改为中文日期格式
+        gantt.config.subscales = [
+            {unit: "month", step: 1, date: "%Y年%M"}, // 添加年月显示
+            {unit: "day", step: 1, date: function(date) {
+                var weekday = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+                return weekday[date.getDay()];
+            }}
+        ];
+
+        // 配置时间刻度的样式
+        gantt.config.scale_height = 60; // 增加刻度高度以适应三行显示
+        gantt.config.row_height = 40; // 调整任务行高
+        gantt.config.min_column_width = 40; // 设置最小列宽
+
+        // 配置工作日
+        gantt.config.work_time = false; // 禁用工作时间
+        gantt.config.skip_off_time = false; // 不跳过非工作时间
+
+        // 配置周末显示
+        gantt.config.weekends = ["周六", "周日"];
+        gantt.templates.scale_cell_class = function(date) {
+            if(date.getDay() === 0 || date.getDay() === 6) {
+                return "weekend";
+            }
+            return "";
+        };
+
+        // 配置任务显示
+        gantt.templates.task_class = function(start, end, task) {
+            if (task.progress < 1) {
+                return "gantt_task_line";
+            }
+            return "gantt_task_line gantt_completed";
+        };
+
+        // 配置任务时间计算
+        gantt.templates.task_date = function(date) {
+            return gantt.date.date_to_str("%Y-%m-%d")(date);
+        };
+
+        // 配置任务持续时间计算
+        gantt.templates.task_duration = function(start, end, task) {
+            return gantt.date.diff(start, end, "day");
+        };
+
+        // 添加周末样式
+        const style = document.createElement('style');
+        style.textContent = `
+            .weekend {
+                background: #f8f9fa;
+            }
+            .gantt_grid_scale, .gantt_task_scale {
+                background-color: #f8f9fa;
+                font-size: 12px;
+                color: #666;
+                font-weight: normal;
+                padding: 4px 0;
+            }
+            .gantt_scale_cell {
+                border-right: 1px solid #e0e0e0;
+            }
+            .gantt_task_line {
+                background-color: var(--accent-color);
+                border: 1px solid var(--primary-color);
+            }
+            .gantt_task_line.gantt_completed {
+                background-color: #e8f5e9;
+                border-color: #4caf50;
+            }
+        `;
+        document.head.appendChild(style);
+
+        gantt.init("gantt_here");
+
+        // 加载任务数据
+        function loadTasks() {
+            fetch('/api/tasks')
+                .then(response => response.json())
+                .then(data => {
+                    gantt.parse({data: data});
+                    updateTaskSelect(data);
+                });
+        }
+
+        // 更新任务选择下拉框
+        function updateTaskSelect(tasks, keepSelectedId = null) {
+            const select = document.getElementById('taskSelect');
+            const currentValue = keepSelectedId || select.value;
+            select.innerHTML = '';
+            tasks.forEach(task => {
+                const option = document.createElement('option');
+                option.value = task.id;
+                option.textContent = task.text;
+                if (task.id == currentValue) {
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        }
+
+        // 加载任务详情
+        function loadTaskDetails(taskId, keepValues = null) {
+            const task = gantt.getTask(taskId);
+            if (task) {
+                // 设置完成进度
+                const progressInput = document.getElementById('progressInput');
+                progressInput.value = keepValues ? Math.round(keepValues.progress * 100) : Math.round(task.progress * 100);
+
+                // 设置开始时间，确保使用本地日期
+                const startDate = document.getElementById('startDate');
+                const date = new Date(task.start_date);
+                const localDate = date.toLocaleDateString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                }).replace(/\//g, '-');
+                startDate.value = localDate;
+
+                // 设置工期
+                const duration = document.getElementById('duration');
+                duration.value = keepValues ? keepValues.duration : (task.duration || '');
+
+                // 设置资源名称
+                const resource = document.getElementById('resource');
+                resource.value = keepValues ? keepValues.resource : (task.resource || '');
+
+                // 更新进度显示
+                updateProgressDisplay(keepValues ? keepValues.progress : task.progress);
+            }
+        }
+
+        // 更新进度显示
+        function updateProgressDisplay(progress) {
+            const percentage = Math.round(progress * 100);
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress mb-2';
+            progressBar.style.height = '4px';
+            
+            const progressBarInner = document.createElement('div');
+            progressBarInner.className = 'progress-bar';
+            progressBarInner.style.width = `${percentage}%`;
+            progressBarInner.setAttribute('role', 'progressbar');
+            progressBarInner.setAttribute('aria-valuenow', percentage);
+            progressBarInner.setAttribute('aria-valuemin', '0');
+            progressBarInner.setAttribute('aria-valuemax', '100');
+            
+            progressBar.appendChild(progressBarInner);
+            
+            const progressInput = document.getElementById('progressInput');
+            const existingProgress = progressInput.previousElementSibling;
+            if (existingProgress && existingProgress.classList.contains('progress')) {
+                existingProgress.remove();
+            }
+            progressInput.parentNode.insertBefore(progressBar, progressInput);
+        }
+
+        // 更新任务
+        function updateTask() {
+            const taskId = document.getElementById('taskSelect').value;
+            const progress = document.getElementById('progressInput').value / 100;
+            const startDate = document.getElementById('startDate').value;
+            const duration = parseInt(document.getElementById('duration').value);
+            const resource = document.getElementById('resource').value;
+
+            // 直接使用本地日期，不进行时区转换
+            const formattedDate = startDate + ' 00:00';
+
+            // 先更新甘特图上的任务
+            const task = gantt.getTask(taskId);
+            if (task) {
+                // 更新任务属性
+                task.progress = progress;
+                task.start_date = new Date(formattedDate);
+                task.duration = duration;
+                task.resource = resource;
+                
+                // 重新计算任务结束时间
+                task.end_date = gantt.date.add(task.start_date, duration, "day");
+                
+                // 强制更新任务并立即刷新显示
+                gantt.updateTask(taskId);
+                gantt.refreshTask(taskId);
+                gantt.render();
+            }
+
+            // 然后发送到服务器
+            fetch(`/api/task/${taskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    progress: progress,
+                    start_date: formattedDate,
+                    duration: duration,
+                    resource: resource
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 保持当前选中的任务
+                    const currentTaskId = document.getElementById('taskSelect').value;
+                    
+                    // 更新任务列表，但保持当前选中的任务
+                    const taskList = gantt.getTaskByTime();
+                    updateTaskSelect(taskList, currentTaskId);
+                    
+                    // 重新加载当前任务的详情，保持用户输入的值
+                    loadTaskDetails(currentTaskId, {
+                        progress: progress,
+                        duration: duration,
+                        resource: resource
+                    });
+                }
+            });
+        }
+
+        // 监听任务选择变化
+        document.getElementById('taskSelect').addEventListener('change', (e) => {
+            loadTaskDetails(e.target.value);
+        });
+
+        // 监听进度输入变化
+        document.getElementById('progressInput').addEventListener('input', (e) => {
+            const progress = parseInt(e.target.value) / 100;
+            updateProgressDisplay(progress);
+        });
+
+        // 初始加载
+        loadTasks();
+
+        // 在script部分添加新的JavaScript函数
+        function showNewTaskForm() {
+            document.getElementById('newTaskForm').style.display = 'block';
+            document.getElementById('taskEditForm').style.display = 'none';
+            updateTaskSelects();
+        }
+
+        function hideNewTaskForm() {
+            document.getElementById('newTaskForm').style.display = 'none';
+            document.getElementById('taskEditForm').style.display = 'block';
+        }
+
+        function updateTaskSelects() {
+            const parentSelect = document.getElementById('newParentTask');
+            const dependenciesSelect = document.getElementById('newDependencies');
+            
+            // 清空现有选项
+            parentSelect.innerHTML = '<option value="0">无</option>';
+            dependenciesSelect.innerHTML = '';
+            
+            // 获取所有任务并添加到选择框中
+            const tasks = gantt.getTaskByTime();
+            tasks.forEach(task => {
+                const parentOption = document.createElement('option');
+                parentOption.value = task.id;
+                parentOption.textContent = task.text;
+                parentSelect.appendChild(parentOption);
+
+                const depOption = document.createElement('option');
+                depOption.value = task.id;
+                depOption.textContent = task.text;
+                dependenciesSelect.appendChild(depOption);
+            });
+        }
+
+        function createNewTask() {
+            const taskName = document.getElementById('newTaskName').value;
+            const startDate = document.getElementById('newStartDate').value + " 00:00";
+            const duration = document.getElementById('newDuration').value;
+            const resource = document.getElementById('newResource').value;
+            const parent = document.getElementById('newParentTask').value;
+            const dependencies = Array.from(document.getElementById('newDependencies').selectedOptions)
+                                   .map(option => option.value)
+                                   .join(',');
+
+            fetch('/api/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: taskName,
+                    start_date: startDate,
+                    duration: duration,
+                    resource: resource,
+                    parent: parent,
+                    dependencies: dependencies,
+                    progress: 0
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadTasks();
+                    hideNewTaskForm();
+                    // 清空表单
+                    document.getElementById('newTaskName').value = '';
+                    document.getElementById('newStartDate').value = '';
+                    document.getElementById('newDuration').value = '';
+                    document.getElementById('newResource').value = '';
+                    document.getElementById('newParentTask').value = '0';
+                    document.getElementById('newDependencies').selectedIndex = -1;
+                }
+            });
+        }
+
+        // 添加删除任务的函数
+        function deleteTask() {
+            const taskId = document.getElementById('taskSelect').value;
+            const taskName = document.getElementById('taskSelect').options[document.getElementById('taskSelect').selectedIndex].text;
+            
+            if (!taskId) {
+                alert('请先选择要删除的任务');
+                return;
+            }
+
+            if (!confirm(`确定要删除任务"${taskName}"吗？此操作不可恢复。`)) {
+                return;
+            }
+
+            fetch(`/api/task/${taskId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 重新加载任务列表
+                    loadTasks();
+                    alert('任务删除成功');
+                } else {
+                    throw new Error(data.error || '删除任务失败');
+                }
+            })
+            .catch(error => {
+                console.error('删除任务时出错:', error);
+                alert('删除任务失败: ' + error.message);
+            });
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
