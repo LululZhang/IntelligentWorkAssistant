@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .upload-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .file-list {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .file-item:last-child {
+            border-bottom: none;
+        }
+        .file-name {
+            flex: 1;
+        }
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
+        .btn-download {
+            background-color: #2196F3;
+        }
+        .btn-delete {
+            background-color: #f44336;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="输入文件名进行搜索...">
+            <button onclick="searchFiles()">检索</button>
+        </div>
+
+        <div class="upload-section">
+            <input type="file" id="fileInput" multiple accept=".txt,.png,.pdf,.doc,.docx">
+            <button class="btn btn-download" onclick="uploadFiles()">上传文件</button>
+        </div>
+
+        <div class="file-list" id="fileList">
+            <!-- 文件列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        let files = [];
+
+        function uploadFiles() {
+            const fileInput = document.getElementById('fileInput');
+            const newFiles = Array.from(fileInput.files);
+            
+            files = [...files, ...newFiles];
+            updateFileList();
+            fileInput.value = ''; // 清空文件输入框
+        }
+
+        function updateFileList(searchTerm = '') {
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+
+            const filteredFiles = files.filter(file => 
+                file.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+
+            filteredFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-actions">
+                        <button class="btn btn-download" onclick="downloadFile(${index})">下载</button>
+                        <button class="btn btn-delete" onclick="deleteFile(${index})">删除</button>
+                    </div>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function downloadFile(index) {
+            const file = files[index];
+            const url = URL.createObjectURL(file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function deleteFile(index) {
+            files.splice(index, 1);
+            updateFileList();
+        }
+
+        function searchFiles() {
+            const searchTerm = document.getElementById('searchInput').value;
+            updateFileList(searchTerm);
+        }
+
+        // 初始化文件列表
+        updateFileList();
+    </script>
+</body>
+</html>
