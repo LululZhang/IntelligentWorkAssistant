@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>上海陆家嘴智慧三维可视化大屏</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Mapbox GL & Geocoder CSS -->
+  <link href="https://unpkg.com/mapbox-gl@2.15.0/dist/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" rel="stylesheet" />
+  <style>
+    /* ----------- 基础样式 ----------- */
+    html,body{margin:0;height:100%;background:#000;color:#0ff;font-family:Segoe UI,Arial,sans-serif;}
+    #app{display:flex;flex-direction:column;height:100%;position:relative;}
+    header{height:58px;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,#013,#035);font-size:24px;font-weight:600;letter-spacing:2px;text-shadow:0 0 8px #0ff;user-select:none;}
+    main{flex:1;display:flex;overflow:hidden;}
+    aside{width:320px;background:rgba(0,0,20,0.6);backdrop-filter:blur(4px);padding:12px 16px;display:flex;flex-direction:column;gap:12px;}
+    aside h3{margin:0;font-size:18px;color:#0ff;text-shadow:0 0 6px #0ff;}
+    #map{flex:1;min-width:0;}
+    .panel-chart{width:100%;background:rgba(0,20,40,0.4);border-radius:8px;box-shadow:0 0 6px rgba(0,255,255,0.4);padding:10px;}  
+    .panel-chart p{margin:8px 0;line-height:1.5;}
+    /* ----------- Geocoder 样式 ----------- */
+    #geocoder{position:absolute;top:70px;left:50%;transform:translateX(-50%);z-index:10;width:320px;}
+    .mapboxgl-ctrl-geocoder{min-width:100%;}
+    /* ----------- Theme Switcher ----------- */
+    #themeSwitcher{position:absolute;top:120px;right:20px;z-index:10;display:flex;gap:8px;}
+    .theme-btn{padding:6px 12px;background:rgba(0,20,40,0.6);border:1px solid #0ff;color:#0ff;border-radius:4px;cursor:pointer;transition:background .2s;backdrop-filter:blur(4px);font-size:14px;}
+    .theme-btn:hover{background:rgba(0,255,255,0.2);}
+    .theme-btn.active{background:#0ff;color:#000;}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <header>智工管家· 智慧三维可视化大屏</header>
+
+    <!-- 地图搜索控件容器 -->
+    <div id="geocoder"></div>
+    <!-- 主题切换按钮 -->
+    <div id="themeSwitcher">
+      <button class="theme-btn active" data-theme="neon">霓虹</button>
+      <button class="theme-btn" data-theme="heat">热度</button>
+    </div>
+
+    <main>
+      <!-- 左侧指标面板 -->
+      <aside>
+        <h3>更新时间：2025年6月7日 14:30</h3>
+        
+        <h3>基本信息</h3>
+        <div class="panel-chart" style="height: 280px; overflow-y: auto;">
+          <p>项目名称：XX市智慧新城综合开发项目</p>
+          <p>项目地点：XX市XX区科技大道与建设路交汇处</p>
+          <p>当前时间：2025年6月7日 14:30</p>
+          <p>天气状况：晴，温度28°C，湿度65%，东南风2级</p>
+          <p>空气质量：良（PM2.5：35μg/m³）</p>
+        </div>
+        
+        <h3>实名考勤</h3>
+        <div class="panel-chart" style="height: 320px; overflow-y: auto;">
+          <p>今日总人数：128人</p>
+          <p>在场人数：112人（管理人员15人，施工人员97人）</p>
+          <p>今日出勤率：87.5%</p>
+          <p><strong>重点人员考勤：</strong></p>
+          <p>项目经理：张XX（在场）</p>
+          <p>安全主管：李XX（在场）</p>
+          <p>特种作业人员：王XX（不在场，原因：请假）</p>
+          <p style="color: #ffaa00;"><strong>考勤异常提醒：</strong></p>
+          <p>3人未打卡（姓名：刘XX、陈XX、赵XX）</p>
+        </div>
+      </aside>
+
+      <!-- 3D 地图容器 -->
+      <div id="map"></div>
+
+      <!-- 右侧监测面板 -->
+      <aside>
+        <h3>项目进度</h3>
+        <div class="panel-chart" style="height: 300px; overflow-y: auto;">
+          <p>总体进度：65%</p>
+          <p>当前施工阶段：主体结构施工（第8层）</p>
+          <p><strong>今日完成情况：</strong></p>
+          <p>混凝土浇筑：300m³（完成率100%）</p>
+          <p>钢筋绑扎：25吨（完成率95%）</p>
+          <p>模板安装：800㎡（完成率80%）</p>
+          <p style="color: #ffaa00;"><strong>进度预警：</strong></p>
+          <p>钢结构吊装进度滞后（计划滞后2天）</p>
+        </div>
+        
+        <h3>环境监测</h3>
+        <div class="panel-chart" style="height: 260px; overflow-y: auto;">
+          <p><strong>噪声监测：</strong></p>
+          <p>实时值：68dB（限值：70dB）</p>
+          <p>状态：正常</p>
+          <p><strong>扬尘监测：</strong></p>
+          <p>PM10：50μg/m³（限值：150μg/m³）</p>
+          <p>状态：正常</p>
+          <p><strong>水质监测：</strong></p>
+          <p>pH值：7.2（限值：6.5~8.5）</p>
+          <p>状态：正常</p>
+          <p style="color: #ffaa00;"><strong>环境预警：</strong></p>
+          <p>无</p>
+        </div>
+        
+        <h3>设备情况</h3>
+        <div class="panel-chart" style="height: 400px; overflow-y: auto;">
+          <p>设备总数：45台（在线38台，离线7台）</p>
+          <p><strong>重点设备状态：</strong></p>
+          <p>塔吊（编号：TL-01）：</p>
+          <p>运行状态：正常</p>
+          <p>负载率：65%</p>
+          <p>摄像头画面：<a href="javascript:void(0)" onclick="alert('跳转到摄像头页面')"><img src="%E7%A4%BA%E4%BE%8B%EF%BC%9A%E5%A1%94%E5%90%8A%E4%BD%9C%E4%B8%9A%E5%8C%BA%E5%9F%9F%EF%BC%8C%E6%97%A0%E9%9A%9C%E7%A2%8D%E7%89%A9" style="width: 100%; height: auto;"></a></p>
+          <p>混凝土泵车（编号：PC-03）：</p>
+          <p>运行状态：故障（维修中）</p>
+          <p>故障原因：液压系统泄漏</p>
+          <p>摄像头画面：<a href="javascript:void(0)" onclick="alert('跳转到摄像头页面')"><img src="%E7%A4%BA%E4%BE%8B%EF%BC%9A%E6%B3%B5%E8%BD%A6%E5%81%9C%E9%9D%A0%E7%BB%B4%E4%BF%AE%E5%8C%BA%EF%BC%8C%E6%8A%80%E6%9C%AF%E4%BA%BA%E5%91%98%E6%A3%80%E4%BF%AE" style="width: 100%; height: auto;"></a></p>
+          <p><strong>摄像头分布：</strong></p>
+          <p>工地入口：2个（实时画面：人员车辆正常通行）</p>
+          <p>施工区域：5个（实时画面：主体结构施工正常）</p>
+          <p>危险区域：3个（实时画面：安全防护到位）</p>
+        </div>
+        
+        <h3>实时预警与通知</h3>
+        <div class="panel-chart" style="height: 260px; overflow-y: auto;">
+          <p style="color: #ffaa00;"><strong>安全预警：</strong></p>
+          <p>14:20 发现未佩戴安全帽人员（摄像头定位：3号施工区）</p>
+          <p>已通知安全主管李XX处理</p>
+          <p style="color: #ffaa00;"><strong>设备预警：</strong></p>
+          <p>混凝土搅拌机（编号：JS-02）温度过高（85°C），已自动停机</p>
+          <p style="color: #ffaa00;"><strong>通知公告：</strong></p>
+          <p>今日下午16:00召开安全例会，请相关人员准时参加</p>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- 外部脚本 -->
+  <script src="https://unpkg.com/mapbox-gl@2.15.0/dist/mapbox-gl.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+
+  <script>
+    /* ---------------- 3D Map ---------------- */
+    // TODO: 替换为你的 Mapbox AccessToken
+    mapboxgl.accessToken = '替换自己的token';
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/satellite-streets-v12',
+      center: [121.5090, 31.2400], // 陆家嘴坐标 (Lng, Lat)
+      zoom: 15.6,
+      pitch: 60,
+      bearing: -40,
+      antialias: true
+    });
+
+    // -------- Mapbox Geocoder 搜索控件 --------
+    const geocoder = new MapboxGeocoder({
+      accessToken: mapboxgl.accessToken,
+      mapboxgl: mapboxgl,
+      placeholder: '搜索地点或地址',
+      marker: true,
+      zoom: 16,
+      language: 'zh-Hans'
+    });
+    document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+    map.on('load', () => {
+      /* 3D 建筑图层 */
+      const layers = map.getStyle().layers;
+      let labelLayerId;
+      for (const layer of layers) {
+        if (layer.type === 'symbol' && layer.layout['text-field']) {
+          labelLayerId = layer.id;
+          break;
+        }
+      }
+      map.addLayer({
+        id: '3d-buildings',
+        source: 'composite',
+        'source-layer': 'building',
+        filter: ['==', 'extrude', 'true'],
+        type: 'fill-extrusion',
+        minzoom: 15,
+        paint: {
+          'fill-extrusion-color': '#00d1ff', // 初始霓虹
+          'fill-extrusion-opacity': 0.85,
+          'fill-extrusion-height': ['interpolate', ['linear'], ['zoom'], 15, 0, 16, ['get', 'height']],
+          'fill-extrusion-base': ['get', 'min_height']
+        }
+      }, labelLayerId);
+
+      /* 主题切换函数 */
+      const setTheme = (theme) => {
+        if(theme === 'neon') {
+          map.setPaintProperty('3d-buildings', 'fill-extrusion-color', '#00d1ff');
+        } else if(theme === 'heat') {
+          map.setPaintProperty('3d-buildings', 'fill-extrusion-color',
+            ['interpolate', ['linear'], ['get','height'],
+              0,   '#ffffb2',
+              50,  '#fecc5c',
+              100, '#fd8d3c',
+              150, '#f03b20',
+              200, '#bd0026']
+          );
+        }
+      };
+
+      // 按钮事件绑定
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          setTheme(btn.dataset.theme);
+        });
+      });
+    });
+
+    /* ---------------- ECharts Panels ---------------- */
+    const chartTraffic = echarts.init(document.getElementById('chart-traffic'));
+    chartTraffic.setOption({
+      backgroundColor: 'transparent',
+      textStyle: { color: '#0ff' },
+      xAxis: { type: 'category', data: ['9:00', '10:00', '11:00', '12:00', '13:00'], axisLine: { lineStyle: { color: '#0ff' } }, axisTick: { show: false } },
+      yAxis: { type: 'value', axisLine: { lineStyle: { color: '#0ff' } }, splitLine: { lineStyle: { color: 'rgba(0,255,255,0.2)' } } },
+      grid: { left: 40, right: 10, top: 30, bottom: 30 },
+      series: [{ name: '客流量', type: 'bar', data: [1500, 2100, 2800, 3400, 3000], barWidth: 18 }]
+    });
+
+    const chartCongestion = echarts.init(document.getElementById('chart-congestion'));
+    chartCongestion.setOption({
+      backgroundColor: 'transparent',
+      textStyle: { color: '#0ff' },
+      tooltip: { formatter: '{b}: {c}%' },
+      series: [{
+        type: 'gauge',
+        startAngle: 180,
+        endAngle: 0,
+        min: 0,
+        max: 100,
+        splitNumber: 5,
+        axisLine: { lineStyle: { width: 10 } },
+        pointer: { length: '70%' },
+        progress: { show: true, width: 10 },
+        detail: { formatter: '{value}%', fontSize: 18, offsetCenter: [0, '60%'] },
+        data: [{ value: 46 }]
+      }]
+    });
+
+    const chartPM25 = echarts.init(document.getElementById('chart-pm25'));
+    chartPM25.setOption({
+      backgroundColor: 'transparent',
+      textStyle: { color: '#0ff' },
+      series: [{
+        type: 'gauge',
+        startAngle: 90,
+        endAngle: -270,
+        min: 0,
+        max: 500,
+        axisLine: { lineStyle: { width: 10 } },
+        pointer: { show: false },
+        progress: { show: true, width: 10 },
+        detail: { formatter: '{value}', fontSize: 18, offsetCenter: [0, '60%'] },
+        data: [{ value: 42, name: 'μg/m³' }]
+      }]
+    });
+
+    const chartEnergy = echarts.init(document.getElementById('chart-energy'));
+    chartEnergy.setOption({
+      backgroundColor: 'transparent',
+      textStyle: { color: '#0ff' },
+      xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], axisLine: { lineStyle: { color: '#0ff' } }, axisTick: { show: false } },
+      yAxis: { type: 'value', axisLine: { lineStyle: { color: '#0ff' } }, splitLine: { lineStyle: { color: 'rgba(0,255,255,0.2)' } } },
+      grid: { left: 40, right: 10, top: 30, bottom: 30 },
+      series: [{ name: '能耗', type: 'line', smooth: true, data: [320, 280, 310, 290, 360, 400, 380] }]
+    });
+  </script>
+</body>
+</html>
