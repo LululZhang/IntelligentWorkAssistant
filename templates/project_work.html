@@ -96,6 +96,250 @@
             font-size: 0.9rem;
             margin-bottom: 0;
         }
+
+        /* 悬浮球样式 */
+        .floating-ball {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        /* 添加事项悬浮球样式 */
+        .floating-ball.add-item {
+            right: 110px;
+            background: #28a745;
+        }
+
+        .floating-ball.add-item:hover {
+            background: #218838;
+        }
+
+        .floating-ball i {
+            font-size: 24px;
+        }
+
+        /* 视频弹窗样式 */
+        .video-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .video-container {
+            position: relative;
+            width: 80%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .video-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .video-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .close-video {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .video-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-item video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .video-item-title {
+            padding: 10px;
+            background: #e9ecef;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        /* 添加事项弹窗样式 */
+        .add-item-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .add-item-container {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .add-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .add-item-title {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .close-add-item {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .add-item-form {
+            display: grid;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: var(--hover-color);
+        }
+
+        /* 提示框样式 */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 8px;
+            padding: 16px 24px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left: 4px solid #28a745;
+        }
+
+        .toast-icon {
+            font-size: 20px;
+            color: #28a745;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin: 0;
+            color: #2c3e50;
+        }
+
+        .toast-message {
+            margin: 4px 0 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
     </style>
 </head>
 <body>
@@ -177,6 +421,227 @@
         </div>
     </div>
 
+    <!-- 悬浮球 -->
+    <div class="floating-ball" onclick="toggleVideoModal()">
+        <i class="bi bi-camera-video"></i>
+    </div>
+
+    <!-- 视频弹窗 -->
+    <div class="video-modal" id="videoModal">
+        <div class="video-container">
+            <div class="video-header">
+                <h3 class="video-title">现场监控</h3>
+                <button class="close-video" onclick="toggleVideoModal()">&times;</button>
+            </div>
+            <div class="video-grid">
+                <div class="video-item">
+                    <iframe src="http://100.78.162.100:8080/" style="width: 100%; height: 240px; border: none;"></iframe>
+                    <div class="video-item-title">1号摄像头 - 主入口</div>
+                </div>
+                <div class="video-item">
+                    <video autoplay muted loop>
+                        <source src="/static/videos/camera2.mp4" type="video/mp4">
+                        您的浏览器不支持视频播放
+                    </video>
+                    <div class="video-item-title">2号摄像头 - 施工现场</div>
+                </div>
+                <div class="video-item">
+                    <video autoplay muted loop>
+                        <source src="/static/videos/camera3.mp4" type="video/mp4">
+                        您的浏览器不支持视频播放
+                    </video>
+                    <div class="video-item-title">3号摄像头 - 材料区</div>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+    <!-- 添加事项悬浮球 -->
+    <div class="floating-ball add-item" onclick="toggleAddItemModal()">
+        <i class="bi bi-plus-lg"></i>
+    </div>
+
+    <!-- 添加事项弹窗 -->
+    <div class="add-item-modal" id="addItemModal">
+        <div class="add-item-container">
+            <div class="add-item-header">
+                <h3 class="add-item-title">添加新事项</h3>
+                <button class="close-add-item" onclick="toggleAddItemModal()">&times;</button>
+            </div>
+            <form class="add-item-form" id="addItemForm">
+                <div class="form-group">
+                    <label for="itemTitle">事项标题</label>
+                    <input type="text" id="itemTitle" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="itemType">事项类型</label>
+                    <select id="itemType" name="type" required>
+                        <option value="">请选择类型</option>
+                        <option value="task">任务</option>
+                        <option value="issue">问题</option>
+                        <option value="note">备注</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="itemPriority">优先级</label>
+                    <select id="itemPriority" name="priority" required>
+                        <option value="">请选择优先级</option>
+                        <option value="high">高</option>
+                        <option value="medium">中</option>
+                        <option value="low">低</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="itemImages">相关图片</label>
+                    <input type="file" id="itemImages" name="images" multiple accept="image/*" class="form-control">
+                    <div id="imagePreview" class="mt-2 d-flex flex-wrap gap-2"></div>
+                </div>
+                <div class="form-group">
+                    <label for="itemDescription">详细描述</label>
+                    <textarea id="itemDescription" name="description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="itemAssignee">负责人</label>
+                    <input type="text" id="itemAssignee" name="assignee" required>
+                </div>
+                <button type="submit" class="submit-btn">提交</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 提示框容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 添加视频错误处理和自动重连
+        const camera1 = document.getElementById('camera1');
+        
+        function handleVideoError() {
+            console.error('视频加载错误，尝试重新连接...');
+            setTimeout(() => {
+                camera1.load(); // 重新加载视频
+                camera1.play().catch(e => console.error('播放失败:', e));
+            }, 3000); // 3秒后重试
+        }
+
+        camera1.addEventListener('error', handleVideoError);
+        
+        // 确保视频自动播放
+        camera1.play().catch(e => {
+            console.error('自动播放失败:', e);
+            handleVideoError();
+        });
+
+        function toggleVideoModal() {
+            const modal = document.getElementById('videoModal');
+            if (modal.style.display === 'flex') {
+                modal.style.display = 'none';
+                // 停止所有视频播放
+                document.querySelectorAll('video').forEach(video => {
+                    video.pause();
+                });
+            } else {
+                modal.style.display = 'flex';
+                // 开始播放所有视频
+                document.querySelectorAll('video').forEach(video => {
+                    video.play();
+                });
+            }
+        }
+
+        // 点击弹窗外部关闭弹窗
+        document.getElementById('videoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                toggleVideoModal();
+            }
+        });
+
+        function toggleAddItemModal() {
+            const modal = document.getElementById('addItemModal');
+            if (modal.style.display === 'flex') {
+                modal.style.display = 'none';
+            } else {
+                modal.style.display = 'flex';
+            }
+        }
+
+        // 点击弹窗外部关闭弹窗
+        document.getElementById('addItemModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                toggleAddItemModal();
+            }
+        });
+
+        // 显示提示框函数
+        function showToast(title, message) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast success';
+            toast.innerHTML = `
+                <i class="bi bi-check-circle-fill toast-icon"></i>
+                <div class="toast-content">
+                    <h4 class="toast-title">${title}</h4>
+                    <p class="toast-message">${message}</p>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // 触发重排以启动动画
+            toast.offsetHeight;
+            toast.classList.add('show');
+            
+            // 3秒后移除提示框
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toastContainer.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // 处理表单提交
+        document.getElementById('addItemForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 获取表单数据
+            const formData = new FormData(this);
+            const itemData = Object.fromEntries(formData.entries());
+            
+            // 这里可以添加发送数据到服务器的代码
+            console.log('提交的事项数据:', itemData);
+            
+            // 显示提交成功提示
+            showToast('提交成功', '新事项已成功添加！');
+            
+            // 关闭弹窗并重置表单
+            toggleAddItemModal();
+            this.reset();
+        });
+
+        // 处理图片预览
+        document.getElementById('itemImages').addEventListener('change', function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            
+            [...this.files].forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.maxWidth = '150px';
+                        img.style.height = '150px';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '8px';
+                        preview.appendChild(img);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+    </script>
 </body>
 </html> 

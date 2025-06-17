@@ -24,9 +24,10 @@
         }
 
         .navbar {
-            background: var(--primary-color);
-            padding: 12px 0;
-            height: 56px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            margin-bottom: 2rem;
         }
 
         .navbar-container {
@@ -38,11 +39,8 @@
 
         .navbar-brand {
             color: white !important;
-            font-size: 26px;
-            font-weight: normal;
-            text-decoration: none;
-            margin: 0;
-            padding: 0;
+            font-weight: bold;
+            font-size: 1.5rem;
         }
 
         .nav-links {
@@ -54,17 +52,12 @@
 
         .nav-link {
             color: rgba(255,255,255,0.9) !important;
-            font-size: 14px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 0;
-            white-space: nowrap;
+            transition: all 0.3s ease;
         }
 
         .nav-link:hover {
             color: white !important;
+            transform: translateY(-2px);
         }
 
         .main-content {
@@ -90,8 +83,8 @@
         }
 
         .project-image-container {
-            height: 100%;
-            position: absolute;
+            height: 600px;
+            position: relative;
             top: 0;
             left: 0;
             right: 0;
@@ -229,18 +222,25 @@
     </style>
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <div class="navbar-container">
-                <a class="navbar-brand" href="#">智工管家</a>
-                <div class="nav-links">
-                    <a class="nav-link" href="{{ url_for('project_selection') }}">
-                        <i class="bi bi-arrow-left"></i>返回项目列表
-                    </a>
-                    <a class="nav-link" href="{{ url_for('logout') }}">
-                        <i class="bi bi-box-arrow-right"></i>退出登录
-                    </a>
-                </div>
+            <a class="navbar-brand" href="#">智工管家</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('project_selection') }}">
+                            <i class="bi bi-arrow-left"></i> 返回项目列表
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">
+                            <i class="bi bi-box-arrow-right"></i> 退出登录
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>

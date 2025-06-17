@@ -26,8 +26,105 @@
     .theme-btn{padding:6px 12px;background:rgba(0,20,40,0.6);border:1px solid #0ff;color:#0ff;border-radius:4px;cursor:pointer;transition:background .2s;backdrop-filter:blur(4px);font-size:14px;}
     .theme-btn:hover{background:rgba(0,255,255,0.2);}
     .theme-btn.active{background:#0ff;color:#000;}
+
+    /* 视频弹窗样式 */
+    .video-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .video-modal-content {
+      position: relative;
+      width: 80%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .video-modal-content video {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      color: #0ff;
+      font-size: 30px;
+      cursor: pointer;
+      text-shadow: 0 0 10px #0ff;
+    }
+
+    .video-item {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .video-item:hover {
+      transform: scale(1.02);
+    }
   </style>
 </head>
+
+<!-- 添加视频弹窗 -->
+<div id="videoModal" class="video-modal">
+  <div class="video-modal-content">
+    <span class="close-modal">&times;</span>
+    <video id="modalVideo" controls>
+      <source src="/static/videos/camera2.mp4" type="video/mp4">
+      您的浏览器不支持视频播放
+    </video>
+  </div>
+</div>
+
+<script>
+  // 视频弹窗功能
+  function openVideoModal(element) {
+    const modal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
+    modal.style.display = 'flex';
+    modalVideo.play();
+  }
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
+    const closeBtn = document.querySelector('.close-modal');
+  
+    // 点击关闭按钮关闭弹窗
+    closeBtn.addEventListener('click', function() {
+      modal.style.display = 'none';
+      modalVideo.pause();
+    });
+  
+    // 点击弹窗背景关闭弹窗
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        modalVideo.pause();
+      }
+    });
+  
+    // ESC键关闭弹窗
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        modal.style.display = 'none';
+        modalVideo.pause();
+      }
+    });
+  });
+  </script>
+
 <body>
   <div id="app">
     <header>智工管家· 智慧三维可视化大屏</header>
@@ -107,11 +204,25 @@
           <p>塔吊（编号：TL-01）：</p>
           <p>运行状态：正常</p>
           <p>负载率：65%</p>
-          <p>摄像头画面：<a href="javascript:void(0)" onclick="alert('跳转到摄像头页面')"><img src="%E7%A4%BA%E4%BE%8B%EF%BC%9A%E5%A1%94%E5%90%8A%E4%BD%9C%E4%B8%9A%E5%8C%BA%E5%9F%9F%EF%BC%8C%E6%97%A0%E9%9A%9C%E7%A2%8D%E7%89%A9" style="width: 100%; height: auto;"></a></p>
+          <p>摄像头画面：<a href="javascript:void(0)" onclick="openVideoModal(this)">
+            <div class="video-item" style="width:300px;" onclick="openVideoModal(this)">
+                <video autoplay muted loop style="width: 100%; height: auto; border-radius: 4px; border: 1px solid rgba(0, 255, 255, 0.3);">
+                    <source src="/static/videos/camera2.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放
+                </video>
+              </div>           
+            </a></p>
           <p>混凝土泵车（编号：PC-03）：</p>
           <p>运行状态：故障（维修中）</p>
           <p>故障原因：液压系统泄漏</p>
-          <p>摄像头画面：<a href="javascript:void(0)" onclick="alert('跳转到摄像头页面')"><img src="%E7%A4%BA%E4%BE%8B%EF%BC%9A%E6%B3%B5%E8%BD%A6%E5%81%9C%E9%9D%A0%E7%BB%B4%E4%BF%AE%E5%8C%BA%EF%BC%8C%E6%8A%80%E6%9C%AF%E4%BA%BA%E5%91%98%E6%A3%80%E4%BF%AE" style="width: 100%; height: auto;"></a></p>
+          <p>摄像头画面：<a href="javascript:void(0)" onclick="openVideoModal(this)">
+            <div class="video-item" style="width:300px;" onclick="openVideoModal(this)">
+              <video autoplay muted loop style="width: 100%; height: auto; border-radius: 4px; border: 1px solid rgba(0, 255, 255, 0.3);">
+                  <source src="/static/videos/camera3.mp4" type="video/mp4">
+                  您的浏览器不支持视频播放
+              </video>
+            </div>           
+          </a></p>
           <p><strong>摄像头分布：</strong></p>
           <p>工地入口：2个（实时画面：人员车辆正常通行）</p>
           <p>施工区域：5个（实时画面：主体结构施工正常）</p>
