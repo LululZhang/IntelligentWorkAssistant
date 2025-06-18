@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">app</string>
+    <string name="login">Login</string>
+    <string name="phone">请输入手机号</string>
+    <string name="password">请输入密码</string>
+</resources>
